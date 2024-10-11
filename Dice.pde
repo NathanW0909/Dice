@@ -1,40 +1,53 @@
+ArrayList<Die> dice;  // Store all dice in an array list
+boolean clicked = false;  // Track if the mouse was clicked
+
 void setup() {
-    size(400, 400);
-    noLoop();  // ensures draw() runs only once unless redraw is called
+    size(500, 500);
+    noLoop();
+    dice = new ArrayList<Die>();
+    
+    // Create 25 dice (5x5 grid)
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            Die die = new Die(50 + j * 80, 50 + i * 80);  // Create dice with spacing
+            dice.add(die);  // Add each die to the list
+        }
+    }
 }
 
 void draw() {
     background(255);  // white background
-    int total = 0;  // total of all dice values
+    int total = 0;
     
-    // Create a 3x3 grid of dice
-    for (int i = 0; i < 3; i++) {  // 3 rows
-        for (int j = 0; j < 3; j++) {  // 3 columns
-            Die die = new Die(100 + j * 60, 100 + i * 60);  // create a die at (x, y) positions
-            die.show();  // draw the die
-            total += die.value;  // add the die value to the total
-        }
+    // Display all dice and calculate the total
+    for (Die die : dice) {
+        die.show();
+        total += die.value;
     }
     
     // Display the total at the bottom of the screen
-    fill(0);  // set text color to black
+    fill(0);
     textSize(20);
-    text("Total: " + total, 100, 350);  // display the total
+    text("Total: " + total, 50, height - 30);  // Display total at the bottom
 }
 
 void mousePressed() {
-    redraw();  // allows the sketch to refresh and roll the dice again
+    clicked = true;  // Flag to indicate that mouse was pressed
+    redraw();
 }
 
 class Die {
-    int x, y, size, value;  // member variables
+    int x, y, size, value;
+    color dieColor;  // Store the color of the die
 
-    // Constructor to initialize the position and size of the die
+    // Constructor to initialize position, size, and color
     Die(int x, int y) {
         this.x = x;
         this.y = y;
-        this.size = 50;  // fixed size of the die
-        roll();  // randomly roll the die
+        this.size = 60;
+        roll();  // Randomly roll the die
+        // Assign a random color to the die
+        dieColor = color(random(100, 255), random(100, 255), random(100, 255));
     }
 
     // Roll the die and assign a random value between 1 and 6
@@ -44,8 +57,14 @@ class Die {
 
     // Display the die and its dots based on the rolled value
     void show() {
-        rect(x, y, size, size);  // draw the die as a square
+        if (clicked) {
+            fill(0);  // Change to black if the mouse is clicked
+        } else {
+            fill(dieColor);  // Use the assigned random color otherwise
+        }
+        rect(x, y, size, size);  // Draw the die
 
+        fill(0);  // Dots are always black
         // Draw dots based on the value of the die
         if (value == 1) {
             ellipse(x + size / 2, y + size / 2, 10, 10);  // center
