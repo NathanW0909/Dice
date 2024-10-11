@@ -1,5 +1,4 @@
 ArrayList<Die> dice;  // Store all dice in an array list
-boolean clicked = false;  // Track if the mouse was clicked
 
 void setup() {
     size(500, 500);
@@ -32,8 +31,12 @@ void draw() {
 }
 
 void mousePressed() {
-    clicked = true;  // Flag to indicate that mouse was pressed
-    redraw();
+    // When the mouse is pressed, roll all the dice again and redraw
+    for (Die die : dice) {
+        die.roll();  // Re-roll the dice
+        die.randomizeColor();  // Assign a new random color
+    }
+    redraw();  // Refresh the screen with new values and colors
 }
 
 class Die {
@@ -46,8 +49,7 @@ class Die {
         this.y = y;
         this.size = 60;
         roll();  // Randomly roll the die
-        // Assign a random color to the die
-        dieColor = color(random(100, 255), random(100, 255), random(100, 255));
+        randomizeColor();  // Assign a random color to the die
     }
 
     // Roll the die and assign a random value between 1 and 6
@@ -55,13 +57,14 @@ class Die {
         value = (int)(Math.random() * 6) + 1;
     }
 
+    // Assign a random color to the die
+    void randomizeColor() {
+        dieColor = color(random(100, 255), random(100, 255), random(100, 255));
+    }
+
     // Display the die and its dots based on the rolled value
     void show() {
-        if (clicked) {
-            fill(0);  // Change to black if the mouse is clicked
-        } else {
-            fill(dieColor);  // Use the assigned random color otherwise
-        }
+        fill(dieColor);  // Use the assigned random color
         rect(x, y, size, size);  // Draw the die
 
         fill(0);  // Dots are always black
